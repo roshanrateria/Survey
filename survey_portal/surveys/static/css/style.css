@@ -1,0 +1,181 @@
+/* Revised CSS using Soft Pastel Colors, Rounded Corners, and Smooth Animations */
+
+/* --------------------------
+   Global Styles
+-------------------------- */
+body {
+    background-color: #f5f7fa;  /* Very light pastel blue */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #555;
+}
+
+/* --------------------------
+   Header & Navigation
+-------------------------- */
+header {
+    background-color: #a8d0e6;  /* Pastel blue */
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid #f76c6c;  /* Pastel red accent */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.user-info {
+    margin: 10px 0;
+}
+
+nav a {
+    color: #ffffff;
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    text-decoration: underline;
+    color: #fdfcdc;  /* Soft pastel yellow for a subtle change */
+}
+
+/* --------------------------
+   Main Content
+-------------------------- */
+main {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* --------------------------
+   Form Styling
+-------------------------- */
+form {
+    margin-top: 20px;
+}
+
+form p,
+form fieldset {
+    margin-bottom: 15px;
+}
+
+fieldset {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #f76c6c;  /* Pastel red */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #ea5455;  /* Slightly darker red */
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* --------------------------
+   Survey List Styling
+-------------------------- */
+.survey-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.survey-list li {
+    background-color: #fdfcdc;  /* Soft pastel yellow */
+    border: 1px solid #f1f1c1;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.survey-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.survey-list li:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.survey-list li a {
+    text-decoration: none;
+    color: #555;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.survey-list li a:hover {
+    color: #333;
+}
+
+/* --------------------------
+   Table Styling
+-------------------------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+/* --------------------------
+   Message Styling
+-------------------------- */
+.messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.messages li {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+/* --------------------------
+   Footer
+-------------------------- */
+footer {
+    background-color: #a8d0e6;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+}

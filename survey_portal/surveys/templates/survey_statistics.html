@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Statistics for: {{ survey.title }}</h2>
+
+{% comment %}
+  For each question, a chart container is created. The chart displays the vote counts for each choice.
+{% endcomment %}
+{% for question, data in stats.items %}
+  <div class="chart-container">
+    <h3>{{ question }}</h3>
+    <canvas id="chart{{ forloop.counter }}"></canvas>
+  </div>
+{% empty %}
+  <p>No statistics available.</p>
+{% endfor %}
+
+<!-- Embedded CSS for Chart Containers -->
+<style>
+  .chart-container {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f7f9fc;
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  }
+  .chart-container h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #333;
+  }
+</style>
+
+<!-- Load Chart.js from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  {% for question, data in stats.items %}
+    var ctx{{ forloop.counter }} = document.getElementById('chart{{ forloop.counter }}').getContext('2d');
+    
+    // Prepare labels and counts arrays
+    var labels{{ forloop.counter }} = [
+      {% for item in data %}
+        "{{ item.choice }}"{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    ];
+    var counts{{ forloop.counter }} = [
+      {% for item in data %}
+        {{ item.count }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    ];
+    
+    var chartData{{ forloop.counter }} = {
+      labels: labels{{ forloop.counter }},
+      datasets: [{
+        label: "{{ question }}",
+        data: counts{{ forloop.counter }},
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    };
+    
+    new Chart(ctx{{ forloop.counter }}, {
+      type: 'bar',
+      data: chartData{{ forloop.counter }},
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  {% endfor %}
+});
+</script>
+{% endblock %}

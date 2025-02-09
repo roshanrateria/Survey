@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Responses for: {{ survey.title }}</h2>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Submitted At</th>
+            <th>Answers</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for response in responses %}
+            <tr>
+                <td>{{ response.user.username }}</td>
+                <td>{{ response.submitted_at }}</td>
+                <td>
+                    <ul>
+                        {% for answer in response.answers.all %}
+                            <li>{{ answer.question.text }}: {{ answer.choice.text }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">No responses yet.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

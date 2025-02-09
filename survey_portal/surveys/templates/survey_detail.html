@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ survey.title }}</h2>
+<p>{{ survey.description }}</p>
+<form method="post">
+    {% csrf_token %}
+    {% for question in survey.questions.all %}
+        <fieldset>
+            <legend>{{ question.text }}</legend>
+            {% for choice in question.choices.all %}
+                <p>
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="{{ choice.id }}" required>
+                        {{ choice.text }}
+                    </label>
+                </p>
+            {% endfor %}
+        </fieldset>
+    {% endfor %}
+    <button type="submit">Submit Survey</button>
+</form>
+{% endblock %}
