@@ -17,20 +17,27 @@ class SurveyForm(forms.ModelForm):
         fields = ['title', 'description']
 
 class QuestionForm(forms.ModelForm):
-    # Extra field for choices: enter choices separated by commas.
+    # Extra field to allow admin to enter choices as a comma‐separated list.
     choices_field = forms.CharField(
         widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter choices separated by commas'}),
         required=True,
         help_text="Enter choices separated by commas."
     )
+    # New field for selecting the chart type.
+    chart_type = forms.ChoiceField(
+        choices=Question.CHART_CHOICES,
+        initial='bar',
+        required=True,
+        help_text="Select the chart type for this question."
+    )
 
     class Meta:
         model = Question
-        fields = ['text']
+        fields = ['text', 'chart_type']
 
     def __init__(self, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
-        # If editing an existing question, pre-populate the choices_field.
+        # Pre-populate choices_field if editing an existing question.
         if self.instance.pk:
             self.fields['choices_field'].initial = ", ".join(
                 [choice.text for choice in self.instance.choices.all()]

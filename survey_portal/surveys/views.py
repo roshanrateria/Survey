@@ -67,13 +67,18 @@ def survey_detail(request, survey_id):
 @login_required
 def survey_statistics(request, survey_id):
     survey = get_object_or_404(Survey, pk=survey_id)
-    stats = {}
+    stats = []
+    # Calculate counts for each choice of every question and include chart type.
     for question in survey.questions.all():
         question_stats = []
         for choice in question.choices.all():
             count = Answer.objects.filter(question=question, choice=choice).count()
             question_stats.append({'choice': choice.text, 'count': count})
-        stats[question.text] = question_stats
+        stats.append({
+            'question_text': question.text,
+            'chart_type': question.chart_type,
+            'data': question_stats,
+        })
     return render(request, 'survey_statistics.html', {'survey': survey, 'stats': stats})
 
 def admin_check(user):

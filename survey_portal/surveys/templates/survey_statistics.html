@@ -2,12 +2,9 @@
 {% block content %}
 <h2>Statistics for: {{ survey.title }}</h2>
 
-{% comment %}
-  For each question, a chart container is created. The chart displays the vote counts for each choice.
-{% endcomment %}
-{% for question, data in stats.items %}
+{% for stat in stats %}
   <div class="chart-container">
-    <h3>{{ question }}</h3>
+    <h3>{{ stat.question_text }}</h3>
     <canvas id="chart{{ forloop.counter }}"></canvas>
   </div>
 {% empty %}
@@ -35,17 +32,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  {% for question, data in stats.items %}
+  {% for stat in stats %}
     var ctx{{ forloop.counter }} = document.getElementById('chart{{ forloop.counter }}').getContext('2d');
     
-    // Prepare labels and counts arrays
+    // Prepare labels and counts arrays.
     var labels{{ forloop.counter }} = [
-      {% for item in data %}
+      {% for item in stat.data %}
         "{{ item.choice }}"{% if not forloop.last %}, {% endif %}
       {% endfor %}
     ];
     var counts{{ forloop.counter }} = [
-      {% for item in data %}
+      {% for item in stat.data %}
         {{ item.count }}{% if not forloop.last %}, {% endif %}
       {% endfor %}
     ];
@@ -53,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var chartData{{ forloop.counter }} = {
       labels: labels{{ forloop.counter }},
       datasets: [{
-        label: "{{ question }}",
+        label: "{{ stat.question_text }}",
         data: counts{{ forloop.counter }},
         backgroundColor: [
           'rgba(54, 162, 235, 0.6)',
@@ -75,8 +72,11 @@ document.addEventListener('DOMContentLoaded', function() {
       }]
     };
     
+    // Use the chart type selected for this question.
+    var chartType{{ forloop.counter }} = "{{ stat.chart_type }}";
+    
     new Chart(ctx{{ forloop.counter }}, {
-      type: 'bar',
+      type: chartType{{ forloop.counter }},
       data: chartData{{ forloop.counter }},
       options: {
         scales: {
