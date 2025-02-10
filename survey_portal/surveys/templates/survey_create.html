@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create New Survey</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h3>Questions</h3>
+    {{ question_formset.management_form }}
+    {% for form in question_formset %}
+        <div class="question-form">
+            <fieldset>
+                <legend>Question {{ forloop.counter }}</legend>
+                {{ form.as_p }}
+            </fieldset>
+        </div>
+    {% endfor %}
+    <button type="submit">Create Survey</button>
+</form>
+{% endblock %}
