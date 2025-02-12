@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Survey Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #555;
+    }
+    header, footer {
+      background-color: #003366;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    header h1, footer p { margin: 0; }
+    nav {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    nav a:hover { background-color: #002244; }
+    .btn {
+      background-color: #f76c6c;
+      color: #fff;
+      padding: 8px 12px;
+      margin: 5px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease, transform 0.1s ease;
+      display: inline-block;
+    }
+    .btn:hover { background-color: #ea5455; }
+    .btn:active { transform: scale(0.98); }
+    .user-info { margin-top: 10px; text-align: center; }
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .messages { list-style: none; padding: 0; margin-bottom: 20px; }
+    .messages li {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+    }
+    @media (max-width: 600px) {
+      header, footer { padding: 15px; }
+      nav { flex-direction: column; align-items: center; }
+      main { margin: 10px; padding: 15px; }
+      .btn { padding: 6px 10px; font-size: 0.9em; }
+    }
+  </style>
+  {% block extra_style %}{% endblock %}
+</head>
+<body>
+  <header>
+    <h1>Survey Portal</h1>
+    <nav>
+      <a href="{% url 'survey_list' %}">Surveys</a>
+      {% if user.is_staff %}
+        <a href="{% url 'survey_create' %}" class="btn">Create Survey</a>
+      {% endif %}
+    </nav>
+    <div class="user-info">
+      {% if user.is_authenticated %}
+        <span>Welcome, {{ user.username }}!</span>
+        <br>
+        <a href="{% url 'logout' %}" class="btn">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn">Login</a>
+        <a href="{% url 'register' %}" class="btn">Register</a>
+      {% endif %}
+    </div>
+  </header>
+  <main>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>&copy; 2025 Survey Portal</p>
+  </footer>
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  {% block extra_script %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+  <form method="post" id="survey-form" class="w-100">
+    {% csrf_token %}
+    <div id="question-cards">
+      {% for question in survey.questions.all %}
+      <div class="card question-card" data-index="{{ forloop.counter0 }}" data-required="{{ question.required|yesno:'true,false' }}" data-question-id="{{ question.id }}" style="display: none;">
+        <div class="card-body">
+          <h5 class="card-title">{{ question.text }} {% if question.required %}<span class="text-danger">*</span>{% endif %}</h5>
+          <div class="options">
+            {% for choice in question.choices.all %}
+            <button type="button" class="btn btn-outline-primary option-btn" data-choice="{{ choice.id }}">{{ choice.text }}</button>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="button" class="btn btn-secondary skip-btn" style="display: none;">Skip</button>
+          <button type="button" class="btn btn-primary next-btn" disabled style="display: none;">Next</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block extra_style %}
+<style>
+  .question-card {
+    margin: auto;
+    max-width: 90%;
+  }
+  .options .btn {
+    margin: 5px;
+    width: 100%;
+  }
+  .option-btn.active {
+    background-color: #007bff;
+    color: white;
+  }
+</style>
+{% endblock %}
+{% block extra_script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var cards = document.querySelectorAll('.question-card');
+    var currentIndex = 0;
+    var answers = {};
+    function showCard(index) {
+        cards.forEach(function(card, i) {
+            card.style.display = (i === index) ? 'block' : 'none';
+        });
+        updateNavigation();
+    }
+    function updateNavigation() {
+        var currentCard = cards[currentIndex];
+        var nextBtn = currentCard.querySelector('.next-btn');
+        var skipBtn = currentCard.querySelector('.skip-btn');
+        nextBtn.disabled = !answers[currentIndex];
+        // If this is the last card, hide the skip button regardless of whether it's optional.
+        if (currentIndex === cards.length - 1) {
+            skipBtn.style.display = 'none';
+        } else {
+            if (currentCard.getAttribute('data-required') === 'false') {
+                skipBtn.style.display = 'inline-block';
+            } else {
+                skipBtn.style.display = 'none';
+            }
+        }
+        if (currentIndex === cards.length - 1) {
+            nextBtn.textContent = "Submit";
+        } else {
+            nextBtn.textContent = "Next";
+        }
+        nextBtn.style.display = 'inline-block';
+    }
+    document.querySelectorAll('.option-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var siblings = this.parentElement.querySelectorAll('.option-btn');
+            siblings.forEach(function(sib) { sib.classList.remove('active'); });
+            this.classList.add('active');
+            var choiceId = this.getAttribute('data-choice');
+            answers[currentIndex] = choiceId;
+            updateNavigation();
+        });
+    });
+    document.querySelectorAll('.next-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            if (currentIndex === cards.length - 1) {
+                var form = document.getElementById('survey-form');
+                cards.forEach(function(card, idx) {
+                    var questionId = card.getAttribute('data-question-id');
+                    if (answers[idx]) {
+                        var input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = questionId;
+                        input.value = answers[idx];
+                        form.appendChild(input);
+                    }
+                });
+                form.submit();
+            } else {
+                currentIndex++;
+                showCard(currentIndex);
+            }
+        });
+    });
+    document.querySelectorAll('.skip-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            currentIndex++;
+            showCard(currentIndex);
+        });
+    });
+    showCard(currentIndex);
+});
+</script>
+{% endblock %}
+

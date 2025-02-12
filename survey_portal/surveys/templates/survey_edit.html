@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Survey: {{ survey.title }}</h2>
+<form method="post" id="survey-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <h3>Questions</h3>
+  {{ question_formset.management_form }}
+  <div id="question-container">
+    {% for form in question_formset %}
+      <div class="question-form">
+        <fieldset>
+          <legend>Question {{ forloop.counter }}</legend>
+          {{ form.as_p }}
+        </fieldset>
+      </div>
+    {% endfor %}
+  </div>
+  <!-- Hidden template for new question form -->
+  <div id="empty-form" style="display: none;">
+    <div class="question-form">
+      <fieldset>
+        <legend>Question __prefix__</legend>
+        {{ question_formset.empty_form.as_p }}
+      </fieldset>
+    </div>
+  </div>
+  <button type="button" id="add-question-btn" class="btn">Add Question</button>
+  <br><br>
+  <button type="submit" class="btn">Update Survey</button>
+</form>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var addBtn = document.getElementById('add-question-btn');
+  addBtn.addEventListener('click', function() {
+      // Get the management form using the explicit prefix "questions"
+      var totalForms = document.getElementById('id_questions-TOTAL_FORMS');
+      var currentCount = parseInt(totalForms.value);
+      var emptyFormTemplate = document.getElementById('empty-form').innerHTML;
+      // Replace placeholder with current form count
+      var newFormHtml = emptyFormTemplate.replace(/__prefix__/g, currentCount);
+      var container = document.getElementById('question-container');
+      var div = document.createElement('div');
+      div.className = 'question-form';
+      div.innerHTML = newFormHtml;
+      
+      // Remove the required attribute from all input, textarea, and select elements
+      var newElements = div.querySelectorAll('input, textarea, select');
+      newElements.forEach(function(el) {
+          el.removeAttribute('required');
+      });
+      
+      container.appendChild(div);
+      totalForms.value = currentCount + 1;
+  });
+});
+</script>
+{% endblock %}
+
+
+{% block extra_style %}
+<style>
+  #survey-form {
+    max-width: 100%;
+  }
+  #survey-form input[type="text"],
+  #survey-form input[type="email"],
+  #survey-form input[type="password"],
+  #survey-form textarea,
+  #survey-form select {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  #survey-form input:focus,
+  #survey-form textarea:focus,
+  #survey-form select:focus {
+    border-color: #003366;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0,51,102,0.5);
+  }
+  .question-form fieldset {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  .question-form legend {
+    font-weight: bold;
+    color: #003366;
+    padding: 0 5px;
+  }
+  @media (max-width: 600px) {
+    #survey-form input,
+    #survey-form textarea,
+    #survey-form select { padding: 8px; font-size: 0.95em; }
+    .question-form fieldset { padding: 10px; }
+  }
+</style>
+{% endblock %}
